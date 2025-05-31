@@ -1,7 +1,7 @@
 ## Paper 编辑器简介
 
 :::info Paper 编辑器
-Paper 是一款轻量级微信公众号 Markdown 编辑器。纯前端 | 可单 html 文件执行 | 好看 | Markdown 微信公众号编辑器。  
+Paper 是一款轻量级纯前端，单 html 文件可执行的微信公众号 Markdown 编辑器。
 
 现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
 :::
@@ -109,7 +109,7 @@ Paper/
 
 ## 快速使用
 
-1. 访问在线版 [md.thus.chat](https://paper.thus.chat)
+1. 访问在线版 [paper.thus.chat](https://paper.thus.chat)
 2. 下载 `html` 单文件到本地直接运行
 3. 下载 `html` 单文件部署到自己的服务器使用
 4. 下载 `html` 单文件用 `AI` 修改成自己喜欢的样式后食用 
