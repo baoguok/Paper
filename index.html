@@ -1696,17 +1696,21 @@
           const defaultContent = `## Paper 编辑器简介
 
 :::info Paper 编辑器
-Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
+Paper 是一款轻量级微信公众号 Markdown 编辑器。纯前端 | 可单 html 文件执行 | 好看 | Markdown 微信公众号编辑器。  
+
+现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
 :::
 
 ### 🎨 常见样式
 
-> **引用样式**：Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
+> **引用样式**：网络不仅能作为一个即时的出版机器(如微博、微信)，它也可以被用来创造一个图书馆(如 Wikipedia)，一座数字花园。  
+By 万尼瓦尔 · 布什 —— 1945 年《As we may think》
 
 :::info 信息卡片
 这是一个信息卡片，支持 **粗体** 和 *斜体* 文本，可以包含多个段落和图片。  
 ![picture](https://pic.thus.chat/rest/gdIbj5K.png)
 :::
+
 
 \`\`\`python
 # 这是一个 Python 代码块
@@ -1765,12 +1769,11 @@ else:
 ### 📁 项目结构
 
 \`\`\`
-Paper_md_editor/
+Paper/
 ├── index.html         # 主应用文件（单文件应用）
-├── ReadMe.md          # 项目说明和使用示例
+├── README.md          # 项目说明和使用示例
 ├── WechatSupport.md     # 微信公众号支持的HTML标签说明
-├── favicon.svg       	# 网站图标
-└── 阳光雨林.jpg        # 示例图片
+└── favicon.svg       	# 网站图标
 \`\`\`
 
 ### 🎨 特色功能
@@ -1801,18 +1804,18 @@ Paper_md_editor/
 
 ## 快速使用
 
-1. 访问在线版 [paper.thus.chat](https://paper.thus.chat)
+1. 访问在线版 [md.thus.chat](https://md.thus.chat)
 2. 下载 \`html\` 单文件到本地直接运行
 3. 下载 \`html\` 单文件部署到自己的服务器使用
-4. 下载 \`html\` 单文件修改成自己喜欢的样式后使用
+4. 下载 \`html\` 单文件用 \`AI\` 修改成自己喜欢的样式后食用 
 
 
-## 特别说明
+## 特别鸣谢
 
 Paper Markdown 编辑器的设计灵感参考了两个项目[jackywine](https://dqxf1izhlm.feishu.cn/wiki/RxfQwz2qXi06aqk17Hocfj5Gnk1), [md.doocs.org](https://md.doocs.org/)，欢迎大家关注这两个项目，也感谢两个项目作者的付出，谢谢。
 
-最后，本项目花费了不少精力，如果可以，请关注我的微信公众号，感谢您的支持！
-![公众号图片](https://pic.thus.chat/rest/KHhpjTK.jpeg)`;
+最后，本项目花费了不少精力，如果可以，请关注我的微信公众号，或加群讨论 Markdown 编辑器相关知识。感谢您的支持！
+![keeptouch.png](https://pic.thus.chat/rest/RxypSTK.png)`;
           
           setEditorValue(defaultContent);
           render();
