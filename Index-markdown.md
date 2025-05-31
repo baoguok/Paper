@@ -109,7 +109,7 @@ Paper/
 
 ## 快速使用
 
-1. 访问在线版 [md.thus.chat](https://md.thus.chat)
+1. 访问在线版 [md.thus.chat](https://paper.thus.chat)
 2. 下载 `html` 单文件到本地直接运行
 3. 下载 `html` 单文件部署到自己的服务器使用
 4. 下载 `html` 单文件用 `AI` 修改成自己喜欢的样式后食用 
