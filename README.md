@@ -5,10 +5,24 @@
 
 # Paper - Markdown 微信公众号编辑器
 
-> Paper 是一款轻量级纯前端，单 html 文件可执行的微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！**定制属于每个人自己的微信公众号样式！**
+> Paper 是一款轻量级纯前端，单 html 文件可执行的微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计，支持多张图片横向滑动查看，支持信息卡片；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！支持cloudflare pagesb部署。**定制属于每个人自己的微信公众号样式！**
+
+![paperview.png](/paperview.png)
+
+
+## 快速使用
+
+1. 访问在线版 [paper.thus.chat](https://paper.thus.chat)
+2. 下载 `html` 单文件到本地 chrome 直接打开运行
+3. 下载 `html` 单文件部署到自己的服务器使用
+4. 下载 `html` 单文件用 `AI` 修改成自己喜欢的样式后食用 
+5. 免费部署到自己的 cloudflare pages，通过自己的域名访问。
+    ![cf.png](/cf.png)
+
 
 ## ✨ 编辑器简介
-![paperview.png](/paperview.png)
+
+[Paper 轻量级微信公众号 Markdown 编辑器 - 微信公众号文章简介](https://mp.weixin.qq.com/s/nbFNsOKvynUzzePMfkw79w)
 
 ### 🎯 核心特性
 
@@ -80,17 +94,15 @@ Paper/
 - 追求简洁高效的 Markdown 编辑体验
 
 
-## 快速使用
-
-1. 访问在线版 [paper.thus.chat](https://paper.thus.chat)
-2. 下载 `html` 单文件到本地直接运行
-3. 下载 `html` 单文件部署到自己的服务器使用
-4. 下载 `html` 单文件用 `AI` 修改成自己喜欢的样式后食用 
-
-
 ## 特别鸣谢
 
 Paper Markdown 编辑器的设计灵感参考了两个项目[jackywine](https://dqxf1izhlm.feishu.cn/wiki/RxfQwz2qXi06aqk17Hocfj5Gnk1), [md.doocs.org](https://md.doocs.org/)，欢迎大家关注这两个项目，也感谢两个项目作者的付出，谢谢。
 
 最后，本项目花费了不少精力，如果可以，请关注我的微信公众号，或加群讨论 Markdown 编辑器相关知识。感谢您的支持！
 ![keeptouch.png](/keeptouch.png)
+
+## 更新记录
+
+### 20250608
+- 增加了两个卡片样式，浅橙色卡片和浅蓝色卡片，通过 `:::orange`、`:::blue` 来引用
+- bug 修复，冗余代码删除

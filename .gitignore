@@ -26,4 +26,27 @@ logs
 
 # Temporary files
 *.tmp
-*.temp 
+*.temp
+
+# 项目特定的忽略文件
+# 添加您不想同步的文件或文件夹
+# 例如：
+test/
+draft/
+private.md
+config.json
+*.backup
+notes.txt
+Index-markdown.md
+WechatSupport.md
+
+
+# 大型媒体文件（如果不想同步）
+# *.mp4
+# *.avi
+# *.mov
+# large_images/
+
+# 本地配置文件
+# .env
+# config.local.js 

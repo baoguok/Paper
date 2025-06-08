@@ -608,6 +608,52 @@
       display: block;
     }
 
+    /* 浅橙色卡片样式 */
+    .typo .orange-card {
+      background: #FFF3E0;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 20px 0;
+      border: none;
+    }
+
+    .typo .orange-card p {
+      margin: 8px 0;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .typo .orange-card p:first-child {
+      margin-top: 0;
+    }
+
+    .typo .orange-card p:last-child {
+      margin-bottom: 0;
+    }
+
+    /* 浅蓝色卡片样式 */
+    .typo .blue-card {
+      background: #E3F2FD;
+      border-radius: 8px;
+      padding: 12px 16px;
+      margin: 20px 0;
+      border: none;
+    }
+
+    .typo .blue-card p {
+      margin: 8px 0;
+      line-height: 1.8;
+      color: #333;
+    }
+
+    .typo .blue-card p:first-child {
+      margin-top: 0;
+    }
+
+    .typo .blue-card p:last-child {
+      margin-bottom: 0;
+    }
+
     /* 状态栏 */
     .status-bar {
       height: 24px;
@@ -1346,6 +1392,16 @@
             return `<div class="info-card-placeholder" data-title="${title}" data-content="${encodeURIComponent(content.trim())}"></div>`;
           });
           
+          // 处理 :::orange 标记的浅橙色卡片（无标题）
+          markdownText = markdownText.replace(/:::orange\n([\s\S]*?):::/g, (match, content) => {
+            return `<div class="orange-card-placeholder" data-content="${encodeURIComponent(content.trim())}"></div>`;
+          });
+          
+          // 处理 :::blue 标记的浅蓝色卡片（无标题）
+          markdownText = markdownText.replace(/:::blue\n([\s\S]*?):::/g, (match, content) => {
+            return `<div class="blue-card-placeholder" data-content="${encodeURIComponent(content.trim())}"></div>`;
+          });
+          
           // 恢复代码块内容
           codeBlocks.forEach((codeBlock, index) => {
             markdownText = markdownText.replace(`__CODE_BLOCK_${index}__`, codeBlock);
@@ -1356,6 +1412,7 @@
 
         // 处理信息卡片占位符
         function processInfoCardPlaceholders(html) {
+          // 处理 info 卡片
           html = html.replace(/<div class="info-card-placeholder" data-title="([^"]*)" data-content="([^"]*)"><\/div>/g, (match, title, encodedContent) => {
             const content = decodeURIComponent(encodedContent);
             let processedContent = converter.makeHtml(content);
@@ -1375,6 +1432,48 @@
                     💡 ${title}
                   </p>
                   <p style="margin: 0; color: #333; line-height: 1.6;">
+                    ${processedContent}
+                  </p>
+                </td>
+              </tr>
+            </table>`;
+          });
+          
+          // 处理 orange 卡片（无标题）
+          html = html.replace(/<div class="orange-card-placeholder" data-content="([^"]*)"><\/div>/g, (match, encodedContent) => {
+            const content = decodeURIComponent(encodedContent);
+            let processedContent = converter.makeHtml(content);
+            
+            // 清理内部的段落标签，使用简单的换行
+            processedContent = processedContent.replace(/<p>/g, '').replace(/<\/p>/g, '<br><br>');
+            processedContent = processedContent.replace(/<br><br>$/, ''); // 移除末尾的换行
+            
+            // 使用表格来创建浅橙色卡片效果（微信公众号完全支持）
+            return `<table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+              <tr>
+                <td style="background-color: #FFF3E0; border: none; border-radius: 8px; padding: 12px 16px;">
+                  <p style="margin: 0; color: #333; line-height: 1.8;">
+                    ${processedContent}
+                  </p>
+                </td>
+              </tr>
+            </table>`;
+          });
+          
+          // 处理 blue 卡片（无标题）
+          html = html.replace(/<div class="blue-card-placeholder" data-content="([^"]*)"><\/div>/g, (match, encodedContent) => {
+            const content = decodeURIComponent(encodedContent);
+            let processedContent = converter.makeHtml(content);
+            
+            // 清理内部的段落标签，使用简单的换行
+            processedContent = processedContent.replace(/<p>/g, '').replace(/<\/p>/g, '<br><br>');
+            processedContent = processedContent.replace(/<br><br>$/, ''); // 移除末尾的换行
+            
+            // 使用表格来创建浅蓝色卡片效果（微信公众号完全支持）
+            return `<table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
+              <tr>
+                <td style="background-color: #E3F2FD; border: none; border-radius: 8px; padding: 12px 16px;">
+                  <p style="margin: 0; color: #333; line-height: 1.8;">
                     ${processedContent}
                   </p>
                 </td>
@@ -1631,14 +1730,22 @@
         // 递归为元素及其子元素注入行内样式
         function inlineStyles(el) {
           // 如果是信息卡片的表格，保持原有样式不变
-          if (el.tagName === 'TABLE' && el.querySelector('td[style*="background-color: #D0F9D0"]')) {
+          if (el.tagName === 'TABLE' && (
+            el.querySelector('td[style*="background-color: #D0F9D0"]') ||
+            el.querySelector('td[style*="background-color: #FFF3E0"]') ||
+            el.querySelector('td[style*="background-color: #E3F2FD"]')
+          )) {
             // 对于信息卡片表格，只处理子元素
             Array.from(el.children).forEach(child => inlineStyles(child));
             return;
           }
           
           // 如果是信息卡片内的td，保持原有样式
-          if (el.tagName === 'TD' && el.getAttribute('style') && el.getAttribute('style').includes('background-color: #D0F9D0')) {
+          if (el.tagName === 'TD' && el.getAttribute('style') && (
+            el.getAttribute('style').includes('background-color: #D0F9D0') ||
+            el.getAttribute('style').includes('background-color: #FFF3E0') ||
+            el.getAttribute('style').includes('background-color: #E3F2FD')
+          )) {
             Array.from(el.children).forEach(child => inlineStyles(child));
             return;
           }
@@ -1738,14 +1845,24 @@
           const defaultContent = `## Paper 编辑器简介
 
 :::info Paper 编辑器
-Paper 是一款轻量级纯前端，单 html 文件可执行的微信公众号 Markdown 编辑器。  
-现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！ **定制属于每个人自己的微信公众号样式！**
+Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！ **定制属于每个人自己的微信公众号样式！**
 :::
+
+[Paper 轻量级微信公众号 Markdown 编辑器 - 微信公众号文章简介](https://mp.weixin.qq.com/s/nbFNsOKvynUzzePMfkw79w)
 
 ### 🎨 常见样式
 
-> **引用样式**：网络不仅能作为一个即时的出版机器(如微博、微信)，它也可以被用来创造一个图书馆(如 Wikipedia)，一座数字花园。  
-By 万尼瓦尔 · 布什 —— 1945 年《As we may think》
+:::orange
+**浅橙色卡片：** Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。
+:::
+
+:::blue
+**浅蓝色卡片：**Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。 
+
+支持换行，支持图片。
+:::
+
+> **引用样式**：Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
 
 :::info 信息卡片
 这是一个信息卡片，支持 **粗体** 和 *斜体* 文本，可以包含多个段落和图片。  
@@ -1846,10 +1963,11 @@ Paper/
 ## 快速使用
 
 1. 访问在线版 [paper.thus.chat](https://paper.thus.chat)
-2. 下载 \`html\` 单文件到本地直接运行
+2. 下载 \`html\` 单文件到本地 chrome 直接打开运行
 3. 下载 \`html\` 单文件部署到自己的服务器使用
 4. 下载 \`html\` 单文件用 \`AI\` 修改成自己喜欢的样式后食用 
-
+5. 免费部署到自己的 cloudflare pages，通过自己的域名访问。
+    ![cf.png](/cf.png)
 
 ## 特别鸣谢
 
