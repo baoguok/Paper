@@ -274,9 +274,15 @@
       border-bottom: 1px solid var(--border-color);
       display: flex;
       align-items: center;
+      justify-content: space-between;
       padding: 0 1rem;
       font-size: 13px;
       color: var(--text-main);
+    }
+
+    .preview-date {
+      font-size: 12px;
+      color: var(--text-light);
     }
 
     .preview-content {
@@ -434,7 +440,7 @@
       text-indent: 0;
     }
 
-    .typo h1, .typo h4, .typo h5, .typo h6 {
+    .typo h1, .typo h5, .typo h6 {
       font-weight: 600;
       line-height: 1.4;
       margin: 20px 0 16px 0;
@@ -443,39 +449,55 @@
 
     .typo h1 { 
       font-size: 22px; 
-      text-align: center;
+      background: none;
+      color: #333;
+      padding: 12px 0;
+      border: none;
+      display: block;
       margin: 20px 0;
+      font-weight: 600;
+      line-height: 1.4;
+      width: 100%;
+      text-align: center;
     }
     
     .typo h2 { 
       font-size: 20px; 
-      background: #d0d0d0;
+      background: none;
       color: #333;
-      padding: 10px 20px;
+      padding: 10px 0 8px 0;
+      border: none;
+      border-bottom: 3px solid #e5e5e5;
       display: block;
-      margin: 24px auto 20px auto;
+      margin: 24px 0 20px 0;
       font-weight: 600;
       line-height: 1.4;
-      width: fit-content;
+      width: 100%;
       text-align: center;
-      position: relative;
     }
     
     .typo h3 { 
       font-size: 17px;
-      background: #f0f0f0;
+      background: none;
       color: #333;
-      padding: 8px 0 8px 12px;
+      padding: 0 0 4px 0;
       border: none;
-      border-left: 4px solid #888888;
+      border-bottom: 1px solid #e5e5e5;
       display: block;
       margin: 18px 0 14px 0;
       font-weight: 600;
       line-height: 1.4;
+      text-align: left;
       width: 100%;
     }
     
-    .typo h4 { font-size: 16px; }
+    .typo h4 { 
+      font-size: 16px; 
+      font-weight: 600;
+      line-height: 1.4;
+      margin: 20px 0 16px 0;
+      color: #333;
+    }
     .typo h5 { font-size: 15px; }
     .typo h6 { font-size: 14px; }
 
@@ -553,7 +575,6 @@
       border: none;
       color: #666;
       background: #f5f5f5;
-      border-radius: 8px;
       font-style: normal;
     }
 
@@ -564,7 +585,6 @@
     /* 信息卡片样式 */
     .typo .info-card {
       background: #D0F9D0;
-      border-radius: 8px;
       padding: 12px 16px;
       margin: 20px 0;
       position: relative;
@@ -603,7 +623,6 @@
     .typo .info-card img {
       max-width: 100%;
       height: auto;
-      border-radius: 8px;
       margin: 12px 0;
       display: block;
     }
@@ -611,7 +630,6 @@
     /* 浅橙色卡片样式 */
     .typo .orange-card {
       background: #FFF3E0;
-      border-radius: 8px;
       padding: 12px 16px;
       margin: 20px 0;
       border: none;
@@ -634,7 +652,6 @@
     /* 浅蓝色卡片样式 */
     .typo .blue-card {
       background: #E3F2FD;
-      border-radius: 8px;
       padding: 12px 16px;
       margin: 20px 0;
       border: none;
@@ -1135,7 +1152,12 @@
 
     <!-- 预览容器 -->
     <div class="preview-container">
-      <div class="preview-header">预览区</div>
+      <div class="preview-header">
+        <span>预览区</span>
+        <div class="preview-date" id="previewDate">
+          <!-- 公历日期将通过JavaScript动态更新 -->
+        </div>
+      </div>
       <div class="preview-content">
         <div class="preview-inner">
           <article id="preview" class="typo"></article>
@@ -1161,7 +1183,7 @@
           <button class="action-btn" id="copyBtn">复制到公众号</button>
           <button class="action-btn secondary" onclick="window.open('https://mermaid-live.nodejs.cn/edit', '_blank')">Mermaid渲染</button>
           <button class="action-btn secondary" onclick="window.open('https://mathjax.thus.chat', '_blank')">数学公式渲染</button>
-          <button class="action-btn secondary" onclick="window.open('https://xiaolinbaba.notion.site/Markdown-bcf20a9190db4b208dc137f755788405', '_blank')">Markdown语法查询</button>
+          <button class="action-btn secondary" onclick="window.open('https://xiaolinbaba.notion.site/Markdown-22219ccf758c80cabadef46d246bfc39', '_blank')">Markdown语法查询</button>
         </div>
       </div>
     </div>
@@ -1246,6 +1268,7 @@
         const charCount = document.getElementById('charCount');
         const saveStatus = document.getElementById('saveStatus');
         const editorDate = document.getElementById('editorDate');
+        const previewDate = document.getElementById('previewDate');
 
         let myConfetti;
         let autoSaveTimer;
@@ -1306,17 +1329,112 @@
           myConfetti = window.confetti;
         }
         
+        // 农历转换功能
+        function solarToLunar(solarYear, solarMonth, solarDay) {
+          // 农历月份名称
+          const lunarMonths = ['正月', '二月', '三月', '四月', '五月', '六月', 
+                              '七月', '八月', '九月', '十月', '冬月', '腊月'];
+          
+          // 农历日期名称
+          const lunarDays = ['初一', '初二', '初三', '初四', '初五', '初六', '初七', '初八', '初九', '初十',
+                            '十一', '十二', '十三', '十四', '十五', '十六', '十七', '十八', '十九', '二十',
+                            '廿一', '廿二', '廿三', '廿四', '廿五', '廿六', '廿七', '廿八', '廿九', '三十'];
+          
+          // 天干地支
+          const heavenlyStems = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
+          const earthlyBranches = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥'];
+          const zodiacAnimals = ['鼠', '牛', '虎', '兔', '龙', '蛇', '马', '羊', '猴', '鸡', '狗', '猪'];
+          
+          // 农历数据（1900-2100年，每年12或13个月的天数）
+          // 这里只提供部分年份数据，实际使用中需要完整的农历数据表
+          const lunarInfo = {
+            2025: [29, 30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 30], // 2025年农历月份天数
+            2024: [30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30]  // 2024年农历月份天数
+          };
+          
+          // 2025年春节是2025年1月29日
+          const springFestival2025 = new Date(2025, 0, 29);
+          const currentDate = new Date(solarYear, solarMonth - 1, solarDay);
+          
+          let lunarYear, lunarMonth, lunarDay;
+          
+          if (currentDate >= springFestival2025) {
+            // 2025年春节后
+            lunarYear = 2025;
+            const daysSinceSpring = Math.floor((currentDate - springFestival2025) / (1000 * 60 * 60 * 24));
+            
+            // 计算农历月日
+            let totalDays = daysSinceSpring + 1; // 春节当天是正月初一
+            lunarMonth = 1;
+            
+            const monthDays = lunarInfo[2025] || [30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30];
+            for (let i = 0; i < monthDays.length && totalDays > monthDays[i]; i++) {
+              totalDays -= monthDays[i];
+              lunarMonth++;
+            }
+            lunarDay = totalDays;
+          } else {
+            // 2024年腊月或更早
+            lunarYear = 2024;
+            const springFestival2024 = new Date(2024, 1, 10); // 2024年春节是2月10日
+            
+            if (currentDate >= springFestival2024) {
+              const daysSinceSpring = Math.floor((currentDate - springFestival2024) / (1000 * 60 * 60 * 24));
+              let totalDays = daysSinceSpring + 1;
+              lunarMonth = 1;
+              
+              const monthDays = lunarInfo[2024] || [30, 29, 30, 29, 30, 29, 30, 30, 29, 30, 29, 30];
+              for (let i = 0; i < monthDays.length && totalDays > monthDays[i]; i++) {
+                totalDays -= monthDays[i];
+                lunarMonth++;
+              }
+              lunarDay = totalDays;
+            } else {
+              // 更早的日期，简化处理
+              lunarYear = solarYear;
+              lunarMonth = solarMonth;
+              lunarDay = solarDay;
+            }
+          }
+          
+          // 确保数值在有效范围内
+          if (lunarMonth > 12) lunarMonth = 12;
+          if (lunarDay > 30) lunarDay = 30;
+          if (lunarMonth < 1) lunarMonth = 1;
+          if (lunarDay < 1) lunarDay = 1;
+          
+          // 计算年份的天干地支
+          const stemIndex = (lunarYear - 4) % 10;
+          const branchIndex = (lunarYear - 4) % 12;
+          const yearGanZhi = heavenlyStems[stemIndex] + earthlyBranches[branchIndex];
+          const zodiac = zodiacAnimals[branchIndex];
+          
+          return {
+            year: lunarYear,
+            month: lunarMonths[lunarMonth - 1],
+            day: lunarDays[lunarDay - 1],
+            yearGanZhi: yearGanZhi,
+            zodiac: zodiac
+          };
+        }
+        
         // 更新日期显示
         function updateDate() {
           const now = new Date();
           const weekdays = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
           const year = now.getFullYear();
-          const month = String(now.getMonth() + 1).padStart(2, '0');
-          const day = String(now.getDate()).padStart(2, '0');
+          const month = now.getMonth() + 1;
+          const day = now.getDate();
           const weekday = weekdays[now.getDay()];
           
-          const dateString = `${year}-${month}-${day} ${weekday}`;
-          editorDate.textContent = dateString;
+          // 编辑区显示农历日期
+          const lunar = solarToLunar(year, month, day);
+          const lunarString = `${lunar.yearGanZhi}${lunar.zodiac}年 ${lunar.month}${lunar.day}`;
+          editorDate.textContent = lunarString;
+          
+          // 预览区显示公历日期
+          const solarString = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')} ${weekday}`;
+          previewDate.textContent = solarString;
         }
         
         // 初始化日期显示
@@ -1422,12 +1540,12 @@
             processedContent = processedContent.replace(/<br><br>$/, ''); // 移除末尾的换行
             
             // 为信息卡片内的图片添加样式限制
-            processedContent = processedContent.replace(/<img([^>]*)>/g, '<img$1 style="max-width: 100%; height: auto; display: block; margin: 8px 0; border-radius: 6px;">');
+            processedContent = processedContent.replace(/<img([^>]*)>/g, '<img$1 style="max-width: 100%; height: auto; display: block; margin: 8px 0;">');
             
             // 使用表格来创建带背景色的卡片效果（微信公众号完全支持）
             return `<table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
               <tr>
-                <td style="background-color: #D0F9D0; border: none; border-radius: 12px; padding: 8px 16px 12px 16px;">
+                <td style="background-color: #D0F9D0; border: none; padding: 8px 16px 12px 16px;">
                   <p style="margin: 0 0 6px 0; color: #d32f2f; font-weight: bold; font-size: 16px;">
                     💡 ${title}
                   </p>
@@ -1451,7 +1569,7 @@
             // 使用表格来创建浅橙色卡片效果（微信公众号完全支持）
             return `<table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
               <tr>
-                <td style="background-color: #FFF3E0; border: none; border-radius: 8px; padding: 12px 16px;">
+                <td style="background-color: #FFF3E0; border: none; padding: 12px 16px;">
                   <p style="margin: 0; color: #333; line-height: 1.8;">
                     ${processedContent}
                   </p>
@@ -1472,7 +1590,7 @@
             // 使用表格来创建浅蓝色卡片效果（微信公众号完全支持）
             return `<table style="width: 100%; margin: 20px 0; border-collapse: collapse;">
               <tr>
-                <td style="background-color: #E3F2FD; border: none; border-radius: 8px; padding: 12px 16px;">
+                <td style="background-color: #E3F2FD; border: none; padding: 12px 16px;">
                   <p style="margin: 0; color: #333; line-height: 1.8;">
                     ${processedContent}
                   </p>
@@ -1532,7 +1650,7 @@
             
             images.forEach((img, index) => {
               slideshowHTML += '<section style="display: inline-block; width: 90%; margin-right: 10px; vertical-align: top;">';
-              slideshowHTML += `<img style="display: block; width: 100%; height: auto; margin: 0.1em auto 0.2em; border: 1px solid rgba(0, 0, 0, 0.04); border-radius: 8px; vertical-align: top;" title="${img.alt || 'picture'}" alt="${img.alt || 'picture'}" src="${img.url}">`;
+              slideshowHTML += `<img style="display: block; width: 100%; height: auto; margin: 0.1em auto 0.2em; border: 1px solid rgba(0, 0, 0, 0.04); vertical-align: top;" title="${img.alt || 'picture'}" alt="${img.alt || 'picture'}" src="${img.url}">`;
               slideshowHTML += `<p style="margin: 0; font-size: 12px; color: #333; text-align: center; white-space: normal; line-height: 1.2;">${img.alt || 'picture'}</p>`;
               slideshowHTML += '</section>';
             });
@@ -1800,12 +1918,12 @@
             const isInList = el.closest('ul') || el.closest('ol') || el.closest('li');
             
             if (isInSlideshow) {
-              el.setAttribute('style', 'display: block; width: 100%; height: auto; margin: 0.1em auto 0.2em; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.04);');
+              el.setAttribute('style', 'display: block; width: 100%; height: auto; margin: 0.1em auto 0.2em; border: 1px solid rgba(0, 0, 0, 0.04);');
             } else if (isInList) {
               // 列表中的图片使用参考代码的样式
-              el.setAttribute('style', 'display: block; max-width: 100%; margin: 0.1em auto 0.5em; border-radius: 8px; border: 1px solid rgba(0, 0, 0, 0.04);');
+              el.setAttribute('style', 'display: block; max-width: 100%; margin: 0.1em auto 0.5em; border: 1px solid rgba(0, 0, 0, 0.04);');
             } else {
-              el.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 16px auto; border-radius: 8px;');
+              el.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 16px auto;');
             }
             return;
           }
@@ -1844,51 +1962,7 @@
           // 如果没有草稿，加载默认测试内容
           const defaultContent = `## Paper 编辑器简介
 
-:::info Paper 编辑器
-Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！ **定制属于每个人自己的微信公众号样式！**
-:::
-
-[Paper 轻量级微信公众号 Markdown 编辑器 - 微信公众号文章简介](https://mp.weixin.qq.com/s/nbFNsOKvynUzzePMfkw79w)
-
-### 🎨 常见样式
-
-:::orange
-**浅橙色卡片：** Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。
-:::
-
-:::blue
-**浅蓝色卡片：**Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。 
-
-支持换行，支持图片。
-:::
-
-> **引用样式**：Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
-
-:::info 信息卡片
-这是一个信息卡片，支持 **粗体** 和 *斜体* 文本，可以包含多个段落和图片。  
-![picture](https://pic.thus.chat/rest/gdIbj5K.png)
-:::
-
-
-\`\`\`python
-# 这是一个 Python 代码块
-def contains_number(s):
-    return any(char.isdigit() for char in s)
-
-test_string = "Hello123"
-if contains_number(test_string):
-    print("字符串包含数字")
-else:
-    print("字符串不包含数字")
-\`\`\`
-
-| 常用网址表格             | 功能                  | 推荐    |
-| ------------------------------------------- | ---------------------- | ------------ |
-| [Mermaid 渲染](https://mermaid-live.nodejs.cn/edit) | Mermaid图渲染 | 🌟🌟🌟  |
-| [数学公式渲染](https://mathjax.thus.chat/)   	| 数学公式渲染 | 🌟🌟🌟 |
-| [Markdown语法速查](https://xiaolinbaba.notion.site/Markdown-bcf20a9190db4b208dc137f755788405) | Markdown 语法速查 | 🌟🌟🌟🌟 |
-
-<![PIC01.png](https://pic.thus.chat/rest/0QryNTK.png),![PIC02.png](https://pic.thus.chat/rest/TypyNTK.png),![PIC03.png](https://pic.thus.chat/rest/6yRyNTK.png)>
+> **Paper** 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！ **定制属于每个人自己的微信公众号样式！**
 
 ### 🎯 核心特性
 
@@ -1934,24 +2008,6 @@ Paper/
 └── favicon.svg       	# 网站图标
 \`\`\`
 
-### 🎨 特色功能
-
-**1. 信息卡片**
-\`\`\`markdown
-:::info 提示标题
-这里是卡片内容，支持**粗体**和*斜体*
-:::
-\`\`\`
-
-**2. 横屏滑动幻灯片**
-\`\`\`markdown
-<![图片1](url1),![图片2](url2),![图片3](url3)>
-\`\`\`
-
-**3. Mac 风格代码块**
-- 自动添加 Mac 样式的三色圆点
-- 支持多种编程语言语法高亮
-
 ### 🚀 使用场景
 
 这个项目特别适合：
@@ -1960,14 +2016,55 @@ Paper/
 - 追求简洁高效的 Markdown 编辑体验
 
 
-## 快速使用
+## 快速开始
 
 1. 访问在线版 [paper.thus.chat](https://paper.thus.chat)
-2. 下载 \`html\` 单文件到本地 chrome 直接打开运行
+2. 下载 \`html\` 单文件到本地直接运行
 3. 下载 \`html\` 单文件部署到自己的服务器使用
 4. 下载 \`html\` 单文件用 \`AI\` 修改成自己喜欢的样式后食用 
-5. 免费部署到自己的 cloudflare pages，通过自己的域名访问。
-    ![cf.png](/cf.png)
+
+
+## 常见样式
+
+:::orange
+**浅橙色卡片：** Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。
+:::
+
+:::blue
+**浅蓝色卡片：**Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。 
+
+支持换行，支持图片。
+:::
+
+> **引用样式**：Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
+
+:::info 信息卡片
+这是一个信息卡片，支持 **粗体** 和 *斜体* 文本，可以包含多个段落和图片。  
+![picture](https://pic.thus.chat/rest/gdIbj5K.png)
+:::
+
+
+\`\`\`python
+# 这是一个 Python 代码块
+def contains_number(s):
+    return any(char.isdigit() for char in s)
+
+test_string = "Hello123"
+if contains_number(test_string):
+    print("字符串包含数字")
+else:
+    print("字符串不包含数字")
+\`\`\`
+
+| 常用网址表格             | 功能                  | 推荐    |
+| ------------------------------------------- | ---------------------- | ------------ |
+| [Mermaid 渲染](https://mermaid-live.nodejs.cn/edit) | Mermaid图渲染 | 🌟🌟🌟  |
+| [数学公式渲染](https://mathjax.thus.chat/)   	| 数学公式渲染 | 🌟🌟🌟 |
+| [Markdown语法速查](https://xiaolinbaba.notion.site/Markdown-22219ccf758c80cabadef46d246bfc39) | Markdown 语法速查 | 🌟🌟🌟🌟 |
+
+<![PIC01.png](https://pic.thus.chat/rest/0QryNTK.png),![PIC02.png](https://pic.thus.chat/rest/TypyNTK.png),![PIC03.png](https://pic.thus.chat/rest/6yRyNTK.png)>
+
+
 
 ## 特别鸣谢
 
