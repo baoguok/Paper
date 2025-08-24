@@ -7,7 +7,7 @@
 
 > Paper 是一款轻量级纯前端，单 html 文件可执行的微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计，支持多张图片横向滑动查看，支持信息卡片；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！支持cloudflare pagesb部署。**定制属于每个人自己的微信公众号样式！**
 
-![paperview.png](/paperview.png)
+![paperview.png](/paper01.png)
 
 
 ## 快速使用
@@ -45,19 +45,6 @@
 - ❌ 数学公式（不支持，请使用发布区链接手工渲染）
 - ❌ Mermaid 图表（不支持，请使用发布区链接手工渲染）
 
-### 🛠️ 技术实现
-
-**前端技术栈：**
-- 纯 HTML + CSS + JavaScript（无框架依赖）
-- Showdown.js（Markdown 转 HTML）
-- Highlight.js（代码语法高亮）
-- Canvas-Confetti（复制成功动画效果）
-
-**核心功能：**
-- 实时 Markdown 渲染
-- 行内样式注入（确保微信兼容性）
-- 响应式设计
-
 ### 📁 项目结构
 
 ```
@@ -94,14 +81,11 @@ Paper/
 - 追求简洁高效的 Markdown 编辑体验
 
 
-## 特别鸣谢
-
-Paper Markdown 编辑器的设计灵感参考了两个项目[jackywine](https://dqxf1izhlm.feishu.cn/wiki/RxfQwz2qXi06aqk17Hocfj5Gnk1), [md.doocs.org](https://md.doocs.org/)，欢迎大家关注这两个项目，也感谢两个项目作者的付出，谢谢。
-
-最后，本项目花费了不少精力，如果可以，请关注我的微信公众号，或加群讨论 Markdown 编辑器相关知识。感谢您的支持！
-![keeptouch.png](/keeptouch.png)
-
 ## 更新记录
+
+### 20250824
+- 全新UI
+- bug 修复
 
 ### 20250702
 - 优化三级标题的显示样式
