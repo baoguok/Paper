@@ -54,6 +54,87 @@ document.addEventListener('DOMContentLoaded', () => {
       parseImgDimensions: true
     });
     
+    // 默认示例内容常量（用于恢复默认内容与首次加载）
+    const DEFAULT_MD_CONTENT = `## Paper 编辑器简介
+
+> **Paper** 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！ **定制属于每个人自己的微信公众号样式！**
+
+![](https://pic2.zhimg.com/v2-8b3e679e2d23b3516650c9e451fde283_r.jpg)
+
+
+### 🎯 核心特性
+
+**1. 现代化三栏布局**
+- 编辑区：支持 Markdown 语法编写
+- 预览区：实时渲染，578px 宽度（与微信公众号编辑器等宽）
+- 发布区：提供一键复制和相关工具链接
+
+**2. 微信公众号完美适配**
+- 预览区严格按照微信公众号标准，预览区与微信公众号编辑器等宽（578px）
+- 支持的样式完全兼容微信公众号平台
+- 一键复制后可直接粘贴到公众号编辑器
+- 针对性设计了二级标题，建议使用二级标题和三级标题
+
+**3. 丰富的功能支持**
+- ✅ 基础 Markdown 语法（标题、段落、列表、表格等）
+- ✅ 代码语法高亮（Kimbie Light 主题，Mac 风格）
+- ✅ 自定义信息卡片（\`:::info\` 语法）
+- ✅ 横屏滑动幻灯片（\`<![alt](url),![alt](url)>\` 语法）
+- ✅ 同步滚动（编辑器与预览区联动）
+- ❌ 数学公式（不支持，请使用工具栏链接手工渲染）
+- ❌ Mermaid 图表（不支持，使用工具栏链接手工渲染）
+
+
+## 快速开始
+
+1. 访问在线版 [paper.thus.chat](https://paper.thus.chat)
+2. 下载 \`html\` 单文件到本地直接运行
+3. 下载 \`html\` 单文件部署到自己的服务器使用
+4. 下载 \`html\` 单文件用 \`AI\` 修改成自己喜欢的样式后食用 
+
+
+## 常见样式
+
+> **引用样式**：Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！
+
+:::orange
+**浅橙色卡片：** Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。
+:::
+
+:::blue
+**浅蓝色卡片：**Paper 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。 
+
+支持换行，支持图片。
+:::
+
+:::info 信息卡片
+这是一个信息卡片，支持 **粗体** 和 *斜体* 文本，可以包含多个段落和图片。  
+![picture](https://pic4.zhimg.com/v2-651d25a2a36f7ee0406f2a310b245def_r.jpg)
+:::
+
+
+\`\`\`python
+# 这是一个 Python 代码块
+
+def contains_number(s):
+    return any(char.isdigit() for char in s)
+
+
+test_string = "Hello123"
+if contains_number(test_string):
+    print("字符串包含数字")
+else:
+    print("字符串不包含数字")
+\`\`\`
+
+| 常用网址表格             | 功能                  | 推荐    |
+| ------------------------------------------- | ---------------------- | ------------ |
+| [Mermaid 渲染](https://mermaid-live.nodejs.cn/edit) | Mermaid图渲染 | 🌟🌟🌟  |
+| [数学公式渲染](https://mathjax.thus.chat/)   \t| 数学公式渲染 | 🌟🌟🌟 |
+| [Markdown语法速查](https://xiaolinbaba.notion.site/Markdown-bcf20a9190db4b208dc137f755788405) | Markdown 语法速查 | 🌟🌟🌟🌟 |
+
+<![PIC01.png](https://picx.zhimg.com/v2-45dd5f524da0d125233d6af4fb2d4135_r.jpg),![PIC02.png](https://pic1.zhimg.com/v2-d591ac49a57ca87cb3c7b29d6e1a7622_r.jpg),![PIC03.png](https://picx.zhimg.com/v2-b712755e8f4e02226582bbfb6246dcd3_r.jpg)>`;
+    
     // DOM 元素引用
     const mdInput = document.getElementById('markdown');
     const preview = document.getElementById('preview');
@@ -67,6 +148,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const zoomLevelEl = document.getElementById('zoomLevel');
     const zoomInBtn = document.getElementById('zoomIn');
     const zoomOutBtn = document.getElementById('zoomOut');
+    const tbResetBtn = document.getElementById('tbReset');
 
     let myConfetti;
     let autoSaveTimer;
@@ -364,8 +446,12 @@ document.addEventListener('DOMContentLoaded', () => {
         processedContent = processedContent.replace(/<p>/g, '').replace(/<\/p>/g, '<br><br>');
         processedContent = processedContent.replace(/<br><br>$/, ''); // 移除末尾的换行
         
-        // 为信息卡片内的图片添加样式限制
-        processedContent = processedContent.replace(/<img([^>]*)>/g, '<img$1 style="max-width: 100%; height: auto; display: block; margin: 8px 0;">');
+        // 为信息卡片内的图片添加样式限制（缩小上下间距）
+        processedContent = processedContent.replace(/<img([^>]*)>/g, '<img$1 style="max-width: 100%; height: auto; display: block; margin: 6px 0;">');
+        // 去除图片前后由 <p> 替换产生的多余 <br>
+        processedContent = processedContent
+          .replace(/(?:<br\s*\/?>\s*)+(<img[^>]*>)/g, '$1')
+          .replace(/(<img[^>]*>)(?:\s*<br\s*\/?>)+/g, '$1');
         
         // 使用表格来创建带背景色的卡片效果（微信公众号完全支持）
         return `<table style="width: 100%; margin: 12px 0; border-collapse: separate; border-spacing: 0;">
@@ -396,7 +482,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <tr>
             <td style="background-color: #FFF3E0; border: none; padding: 12px 16px; border-radius: 8px;">
               <p style="margin: 0; color: #333; line-height: 1.8;">
-                ${processedContent}
+                ${processedContent
+                  .replace(/<img([^>]*)>/g, '<img$1 style="max-width: 100%; height: auto; display: block; margin: 6px 0;">')
+                  .replace(/(?:<br\s*\/?>\s*)+(<img[^>]*>)/g, '$1')
+                  .replace(/(<img[^>]*>)(?:\s*<br\s*\/?>)+/g, '$1')}
               </p>
             </td>
           </tr>
@@ -417,7 +506,10 @@ document.addEventListener('DOMContentLoaded', () => {
           <tr>
             <td style="background-color: #E3F2FD; border: none; padding: 12px 16px; border-radius: 8px;">
               <p style="margin: 0; color: #333; line-height: 1.8;">
-                ${processedContent}
+                ${processedContent
+                  .replace(/<img([^>]*)>/g, '<img$1 style="max-width: 100%; height: auto; display: block; margin: 6px 0;">')
+                  .replace(/(?:<br\s*\/?>\s*)+(<img[^>]*>)/g, '$1')
+                  .replace(/(<img[^>]*>)(?:\s*<br\s*\/?>)+/g, '$1')}
               </p>
             </td>
           </tr>
@@ -782,9 +874,14 @@ document.addEventListener('DOMContentLoaded', () => {
         const isInSlideshow = el.closest('section[style*="overflow-x: scroll"]');
         // 检查是否在列表中
         const isInList = el.closest('ul') || el.closest('ol') || el.closest('li');
+        // 检查是否在信息卡片（表格单元格背景色）中
+        const infoCardTd = el.closest('td[style*="background-color: #D0F9D0"], td[style*="background-color: #FFF3E0"], td[style*="background-color: #E3F2FD"]');
         
         if (isInSlideshow) {
           el.setAttribute('style', 'display: block; width: 100%; height: auto; margin: 0.1em auto 0.2em; border: 1px solid rgba(0, 0, 0, 0.04);');
+        } else if (infoCardTd) {
+          // 卡片内图片统一更小的上下间距
+          el.setAttribute('style', 'max-width: 100%; height: auto; display: block; margin: 6px 0;');
         } else if (isInList) {
           // 列表中的图片使用参考代码的样式
           el.setAttribute('style', 'display: block; max-width: 100%; margin: 0.1em auto 0.5em; border: 1px solid rgba(0, 0, 0, 0.04);');
@@ -804,16 +901,35 @@ document.addEventListener('DOMContentLoaded', () => {
       let styleStr = '';
       // 为内联元素及列表项目避免设置会影响换行的属性（如 width/display/position/white-space）
       const INLINE_TAGS = new Set(['STRONG','B','EM','I','SPAN','A','CODE','SMALL','SUP','SUB']);
-      let props = ['font-family','font-size','color','text-align','border','border-left','border-bottom','background','line-height','margin','padding','border-radius','box-shadow','text-shadow','width','display','position','white-space','word-wrap','word-break','overflow-x'];
+      // 默认不拷贝 background，避免在公众号出现浅色底；仅对特定标签保留
+      let props = ['font-family','font-size','color','text-align','border','border-left','border-bottom','line-height','margin','padding','border-radius','box-shadow','text-shadow','width','display','position','white-space','word-wrap','word-break','overflow-x'];
+      // 仅对信息卡片的 TD、引用样式和代码样式保留背景（h2 不再保留）
+      if ((el.tagName === 'TD' && el.getAttribute('style') && (
+            el.getAttribute('style').includes('background-color: #D0F9D0') ||
+            el.getAttribute('style').includes('background-color: #FFF3E0') ||
+            el.getAttribute('style').includes('background-color: #E3F2FD')
+          )) ||
+          el.tagName === 'BLOCKQUOTE' ||
+          el.tagName === 'PRE' ||
+          el.tagName === 'CODE') {
+        props.push('background');
+      }
       if (INLINE_TAGS.has(el.tagName) || el.tagName === 'LI' || el.tagName === 'P') {
         props = props.filter(p => !['width','display','position','white-space'].includes(p));
       }
-      props.forEach(prop => {
-        const val = cs.getPropertyValue(prop);
-        if (val && val !== 'rgba(0, 0, 0, 0)' && val !== 'transparent' && val !== 'none') {
-          styleStr += `${prop}:${val};`;
-        }
-      });
+             props.forEach(prop => {
+         const val = cs.getPropertyValue(prop);
+         if (val && val !== 'rgba(0, 0, 0, 0)' && val !== 'transparent' && val !== 'none') {
+           // 过滤掉编辑器界面的浅灰背景色 #f8fafc (248,250,252)
+           if (prop === 'background' || prop === 'background-color') {
+             if (val.includes('248, 250, 252') || val.includes('#f8fafc') || 
+                 val.includes('rgb(248, 250, 252)') || val.includes('rgba(248, 250, 252')) {
+               return; // 跳过这个背景色
+             }
+           }
+           styleStr += `${prop}:${val};`;
+         }
+       });
       
       // 特殊处理代码块的Mac样式
       if (el.tagName === 'PRE') {
@@ -838,7 +954,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } else {
       // 如果没有草稿，加载默认测试内容
-      const defaultContent = `## Paper 编辑器简介
+      const defaultContent = DEFAULT_MD_CONTENT || `## Paper 编辑器简介
 
 > **Paper** 是一款轻量级微信公众号 Markdown 编辑器。现代化三栏布局，实时 Markdown 预览，响应式设计；支持大部分 Markdown 语法 (数学公式和 Mermaid除外,请在发布区进行手工渲染)，支持信息卡片。预览区与微信公众号编辑器等宽，所见即所得。欢迎使用👏！ **定制属于每个人自己的微信公众号样式！**
 
@@ -950,6 +1066,85 @@ else:
       });
       
       inlineStyles(clone);
+      
+      // 彻底清理所有不需要的背景色
+      function cleanBackgrounds(element) {
+        const allElements = [element, ...element.querySelectorAll('*')];
+        allElements.forEach(el => {
+          if (!el.tagName) return;
+          
+          // 保留信息卡片表格、引用样式和代码样式的背景（h2 不再保留）
+          const isInfoCardTd = el.tagName === 'TD' && el.getAttribute('style') && (
+            el.getAttribute('style').includes('background-color: #D0F9D0') ||
+            el.getAttribute('style').includes('background-color: #FFF3E0') ||
+            el.getAttribute('style').includes('background-color: #E3F2FD')
+          );
+          const isBlockquote = el.tagName === 'BLOCKQUOTE';
+          const isPre = el.tagName === 'PRE';
+          const isCode = el.tagName === 'CODE';
+          
+          if (!isInfoCardTd && !isBlockquote && !isPre && !isCode) {
+            // 强制设置背景为透明
+            if (el.style) {
+              el.style.setProperty('background', 'transparent', 'important');
+              el.style.setProperty('background-color', 'transparent', 'important');
+              el.style.removeProperty('background-image');
+              el.style.removeProperty('background-attachment');
+              el.style.removeProperty('background-clip');
+              el.style.removeProperty('background-origin');
+              el.style.removeProperty('background-position');
+              el.style.removeProperty('background-repeat');
+              el.style.removeProperty('background-size');
+            }
+            
+            // 彻底清理style属性中的所有背景设置
+            const styleAttr = el.getAttribute('style');
+            if (styleAttr) {
+              let cleanedStyle = styleAttr
+                // 移除所有可能的背景色格式
+                .replace(/background[^;]*;?/gi, '')
+                .replace(/background-color[^;]*;?/gi, '')
+                .replace(/background-image[^;]*;?/gi, '')
+                // 清理连续的分号
+                .replace(/;\s*;/g, ';')
+                .replace(/^;|;$/g, '');
+              
+              // 重新添加透明背景
+              if (cleanedStyle) {
+                cleanedStyle += '; background-color: transparent !important;';
+              } else {
+                cleanedStyle = 'background-color: transparent !important;';
+              }
+              
+              el.setAttribute('style', cleanedStyle);
+            } else {
+              // 如果没有style属性，直接添加透明背景
+              el.setAttribute('style', 'background-color: transparent !important;');
+            }
+          }
+        });
+        
+        // 特别处理信息卡片内的段落，确保边距与引用样式一致
+        const cardParagraphs = clone.querySelectorAll('td[style*="background-color: #D0F9D0"] p, td[style*="background-color: #FFF3E0"] p, td[style*="background-color: #E3F2FD"] p');
+        cardParagraphs.forEach(p => {
+          if (p.style) {
+            p.style.setProperty('margin', '0', 'important');
+          }
+          // 也处理style属性
+          const styleAttr = p.getAttribute('style');
+          if (styleAttr) {
+            const cleanedStyle = styleAttr
+              .replace(/margin[^;]*;?/gi, '')
+              .replace(/;\s*;/g, ';')
+              .replace(/^;|;$/g, '');
+            p.setAttribute('style', cleanedStyle ? cleanedStyle + '; margin: 0 !important;' : 'margin: 0 !important;');
+          } else {
+            p.setAttribute('style', 'margin: 0 !important;');
+          }
+        });
+      }
+      
+      cleanBackgrounds(clone);
       clone.style.position = 'fixed'; 
       clone.style.top = '0'; 
       clone.style.left = '-9999px';
@@ -1148,5 +1343,17 @@ else:
     safeBind('toolClear', () => { if (confirm('确认清空当前内容？')) { codeMirrorEditor.setValue(''); render(); } });
 
     // 字号与行高功能暂时取消（保留默认样式）
+    
+    // 恢复默认内容按钮
+    function resetToDefault(){
+      if (!confirm('确认恢复默认内容？草稿将被覆盖。')) return;
+      setEditorValue(DEFAULT_MD_CONTENT);
+      localStorage.removeItem('md_editor_draft');
+      localStorage.removeItem('md_editor_save_time');
+      render();
+      saveStatus.textContent = '已恢复默认内容';
+      setTimeout(()=>{ saveStatus.textContent = '已保存'; }, 2000);
+    }
+    if (tbResetBtn) tbResetBtn.addEventListener('click', resetToDefault);
   }
 });
