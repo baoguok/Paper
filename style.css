@@ -497,13 +497,15 @@ body {
   font-size: 22px; 
   color: #111827;
   font-weight: 700;
-  padding: 0 0 8px 0;
   margin: 28px 0 16px 0;
   line-height: 1.35;
   text-align: left;
+  display: block; /* 标题独占一行 */
+  padding: 0 0 3px 0; /* 再贴近一些 */
   border: none;
-  display: inline-block; /* 使粗线长度跟随文字 */
-  background: linear-gradient(90deg, #9ca3af, #9ca3af) left bottom / 100% 4px no-repeat;
+  border-bottom: 2px solid #111827; /* 更细的底部分隔线 */
+  background: none !important; /* 取消原背景下划线 */
+  background-color: transparent !important; /* 明确无背景色，避免继承 #f8fafc */
 }
 
 .typo h3 { 
@@ -633,7 +635,7 @@ body {
 }
 
 .typo .info-card p {
-  margin: 8px 0;
+  margin: 0;
   line-height: 1.8;
   color: #2e2e2e;
 }
@@ -650,7 +652,15 @@ body {
 .typo .info-card img {
   max-width: 100%;
   height: auto;
-  margin: 12px 0;
+  margin: 6px 0; /* 缩小卡片内图片上下间距 */
+  display: block;
+}
+/* 橙/蓝卡片内图片边距缩小 */
+.typo .orange-card img,
+.typo .blue-card img {
+  max-width: 100%;
+  height: auto;
+  margin: 6px 0;
   display: block;
 }
 
@@ -664,7 +674,7 @@ body {
 }
 
 .typo .orange-card p {
-  margin: 8px 0;
+  margin: 0;
   line-height: 1.8;
   color: #333;
 }
@@ -687,7 +697,7 @@ body {
 }
 
 .typo .blue-card p {
-  margin: 8px 0;
+  margin: 0;
   line-height: 1.8;
   color: #333;
 }
